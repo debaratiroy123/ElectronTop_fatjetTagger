@@ -24,7 +24,7 @@ void Anal_LeptopReco2D_PROOF::SlaveBegin(TTree * /*tree*/)
   TString option = GetOption();
   //OutFile = new TProofOutputFile("testHadronic_elid_notallevtsv4.root");
   //OutFile = new TProofOutputFile("SingleElectron_Data_2018A_leptrig.root");
-  OutFile = new TProofOutputFile("testQCD_2000toInf.root");
+  OutFile = new TProofOutputFile("testQCD_2000toInfv.root");
 
   //fOutput->Add(OutFile);
   fileOut = OutFile->OpenFile("RECREATE");
@@ -153,7 +153,7 @@ void Anal_LeptopReco2D_PROOF::SlaveBegin(TTree * /*tree*/)
   hist_th_tau32 = new TH1D("HTop_tau32","HTop_tau32",25,0,1);
   hist_th_tau32->Sumw2();  
   
-  hist_count = new TH1D("Counter","Counter",10,0.5,10.5);
+  hist_count = new TH1D("Counter","Counter",12,0.5,12.5);
   hist_count->Sumw2();  
 }
 
@@ -545,7 +545,7 @@ Bool_t Anal_LeptopReco2D_PROOF::Process(Long64_t entry)
   
   if (Jet_basesel.size() <= 0) return kFALSE;
   if (El_Fsel.size() != 1) return kFALSE;
-  
+
   float dR_min(1000.0);
   int nearjet(-1);
   bool passed_2D(false);
@@ -632,11 +632,16 @@ Bool_t Anal_LeptopReco2D_PROOF::Process(Long64_t entry)
   int isoljet(-1); 
   bool elclosejet(false);
   if(thcand >=0 && nhcand==1){
+    hist_count->Fill(6,weight);
+
     for(int ijet=0; ijet<npfjetAK4; ijet++){
       if(delta2R(pfjetAK8y[thcand],pfjetAK8phi[thcand],pfjetAK4y[ijet],pfjetAK4phi[ijet]) > 1.2)
 	isoljet = ijet;
       break;
     }
+    if (isoljet >= 0) hist_count->Fill(7,weight);
+    if (isoljet >= 0 && delta2R(pfjetAK4y[isoljet],pfjetAK4phi[isoljet],El_Fsel[0].Eta(),El_Fsel[0].Phi()) < 0.8) hist_count->Fill(8,weight);
+    if (isoljet >= 0 && delta2R(pfjetAK4y[isoljet],pfjetAK4phi[isoljet],El_Fsel[0].Eta(),El_Fsel[0].Phi()) < 0.8 && passed_2D == 1) hist_count->Fill(9,weight);
     if (isoljet >= 0 && passed_2D == 1 && delta2R(pfjetAK4y[isoljet],pfjetAK4phi[isoljet],El_Fsel[0].Eta(),El_Fsel[0].Phi()) < 0.8) elclosejet = true;
   }
   
@@ -676,11 +681,11 @@ Bool_t Anal_LeptopReco2D_PROOF::Process(Long64_t entry)
     hist_th_sdmass->Fill(pfjetAK8sdmass[thcand],weight);
     hist_th_tau32->Fill(pfjetAK8tau32[thcand],weight);
     hist_th_deepak8->Fill(pfjetAK8DeepTag_TvsQCD[thcand],weight);
-    hist_count->Fill(6,weight);
+    hist_count->Fill(10,weight);
   }
   if(elclosejet == 1){
     
-    hist_count->Fill(7,weight);
+    hist_count->Fill(11,weight);
     hist_npv_sel->Fill(nchict,weight);
     hist_njets_AK8->Fill(npfjetAK8,weight);
     hist_njets_AK4->Fill(npfjetAK4,weight);
@@ -688,7 +693,7 @@ Bool_t Anal_LeptopReco2D_PROOF::Process(Long64_t entry)
     
     if(nbjetAK4>=nbjet_cut){ 
       
-      hist_count->Fill(8,weight);
+      hist_count->Fill(12,weight);
       /*
       hist_obs[0]->Fill(pfjetAK8pt[telcand],weight);
       hist_obs[1]->Fill(pfjetAK8y[telcand],weight);
