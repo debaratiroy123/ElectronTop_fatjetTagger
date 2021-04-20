@@ -98,7 +98,7 @@ void Compare_DataMC()
 	sprintf(name,"%s",obsnames[ihist]);
       }
       hist_obs[ihist][fg] = (TH1D*)filein->Get(name);
-      std::cout << " name " << name << std::endl;
+//      std::cout << " name " << name << std::endl;
       hist_obs[ihist][fg]->Scale(lumi_fac[fg]);
       
       if (ihist==14) {
@@ -194,7 +194,7 @@ void Compare_DataMC()
     legv[iv]->SetBorderSize(0);
     
     for(int bkg=0; bkg<(nfiles); bkg++){ 
-      if(bkg==0){ legv[iv]->AddEntry(hist_obs[iv][bkg],dataname[bkg],"ep"); }
+      if(bkg==0){ legv[iv]->AddEntry(hist_obs[iv][bkg],dataname[bkg],"lep"); }
       else{	
 	legv[iv]->AddEntry(hist_obs[iv][bkg],dataname[bkg],"f");
       }
@@ -231,20 +231,23 @@ void Compare_DataMC()
     rat_obs[iv]->Divide(hist_obs_bkg[iv]);
     
     //new addtions for drawing band//
+    
     int nValidRatioPoints(hist_obs_bkg[iv]->GetNbinsX());
     ratioGraph[iv] = new TGraphAsymmErrors(nValidRatioPoints);
-    for (int z=1; z<= nValidRatioPoints; ++z) {
-      if (hist_obs_bkg[iv]->GetBinContent(z) > 0) {
-	ratioGraph[iv]->SetPoint(z, hist_obs_bkg[iv]->GetBinCenter(z), 1);
-	ratioGraph[iv]->SetPointError(z,(hist_obs_bkg[iv]->GetBinWidth(z))/2, (hist_obs_bkg[iv]->GetBinWidth(z))/2, (hist_obs_bkg[iv]->GetBinError(z)/hist_obs_bkg[iv]->GetBinContent(z)), (hist_obs_bkg[iv]->GetBinError(z)/hist_obs_bkg[iv]->GetBinContent(z)));
+    for (int z=0; z< nValidRatioPoints; z++) {
+      if (hist_obs_bkg[iv]->GetBinContent(z+1) > 0) {
+		ratioGraph[iv]->SetPoint(z, hist_obs_bkg[iv]->GetBinCenter(z+1), 1);
+		ratioGraph[iv]->SetPointError(z,(hist_obs_bkg[iv]->GetBinWidth(z+1))/2, (hist_obs_bkg[iv]->GetBinWidth(z+1))/2, (hist_obs_bkg[iv]->GetBinError(z+1)/hist_obs_bkg[iv]->GetBinContent(z+1)), (hist_obs_bkg[iv]->GetBinError(z+1)/hist_obs_bkg[iv]->GetBinContent(z+1)));
+     
       }
       else {
-        ratioGraph[iv]->SetPoint(z, hist_obs_bkg[iv]->GetBinCenter(z), 1);
-        ratioGraph[iv]->SetPointError(z,(hist_obs_bkg[iv]->GetBinWidth(z))/2, (hist_obs_bkg[iv]->GetBinWidth(z))/2,0,0);
+        ratioGraph[iv]->SetPoint(z, hist_obs_bkg[iv]->GetBinCenter(z+1), 1);
+        ratioGraph[iv]->SetPointError(z,(hist_obs_bkg[iv]->GetBinWidth(z+1))/2, (hist_obs_bkg[iv]->GetBinWidth(z+1))/2,0,0);
       }
     }
+    
     //*****************************//
-    /*
+    
     if(iv==0){
       gPad->SetLogx(1);
       rat_obs[iv]->GetXaxis()->SetMoreLogLabels(kTRUE);
@@ -255,7 +258,8 @@ void Compare_DataMC()
     rat_obs[iv]->GetXaxis()->SetTitle(name);
     rat_obs[iv]->GetXaxis()->SetTitleSize(0.1);
     rat_obs[iv]->GetXaxis()->SetLabelSize(0.1);
-    rat_obs[iv]->GetXaxis()->CenterTitle();
+//    rat_obs[iv]->GetXaxis()->CenterTitle();
+    rat_obs[iv]->GetXaxis()->SetNdivisions(406);  
     
     rat_obs[iv]->GetYaxis()->SetTitle("Data / MC");
     rat_obs[iv]->GetYaxis()->SetTitleSize(0.1);
@@ -273,18 +277,9 @@ void Compare_DataMC()
     rat_obs[iv]->SetMarkerColor(kBlack);
     rat_obs[iv]->SetMarkerSize(0.7);
     rat_obs[iv]->SetLineColor(kBlack);
-    
+   
     rat_obs[iv]->Draw("e,p");
-
-    ratioGraph[iv]->SetFillStyle(3001);
-    ratioGraph[iv]->SetFillColor(45);
-    ratioGraph[iv]->SetLineWidth(0);
-    ratioGraph[iv]->SetMarkerSize(0);
-    ratioGraph[iv]->SetLineColor(45);
-    ratioGraph[iv]->SetLineWidth(0);
-    ratioGraph[iv]->Draw("a2");
-    */
-
+    
     if(iv==0){                                                                                                
       gPad->SetLogx(1);                                                                                          
       ratioGraph[iv]->GetXaxis()->SetMoreLogLabels(kTRUE);                                                       
@@ -294,7 +289,8 @@ void Compare_DataMC()
     ratioGraph[iv]->GetXaxis()->SetTitle(name);                                                                  
     ratioGraph[iv]->GetXaxis()->SetTitleSize(0.1);                                                               
     ratioGraph[iv]->GetXaxis()->SetLabelSize(0.1);                                                               
-    ratioGraph[iv]->GetXaxis()->CenterTitle();                                                                   
+    ratioGraph[iv]->GetXaxis()->CenterTitle();       
+    ratioGraph[iv]->GetXaxis()->SetNdivisions(406);                                                              
     ratioGraph[iv]->GetYaxis()->SetTitle("Data / MC");                                                           
     ratioGraph[iv]->GetYaxis()->SetTitleSize(0.1);                                                               
     ratioGraph[iv]->GetYaxis()->SetLabelSize(0.1);                                                               
@@ -308,14 +304,8 @@ void Compare_DataMC()
     ratioGraph[iv]->SetMarkerSize(0);                                                                            
     ratioGraph[iv]->SetLineColor(45);                                                                            
     ratioGraph[iv]->SetLineWidth(0);                                                                             
-    ratioGraph[iv]->Draw("a2"); 
+    ratioGraph[iv]->Draw("e2"); 
     
-    rat_obs[iv]->SetFillStyle(0);                                                                                
-    rat_obs[iv]->SetFillColor(0);                                                                                
-    rat_obs[iv]->SetMarkerStyle(kFullCircle);                                                                    
-    rat_obs[iv]->SetMarkerColor(kBlack);                                                                         
-    rat_obs[iv]->SetMarkerSize(0.7);                                                                             
-    rat_obs[iv]->SetLineColor(kBlack);
     rat_obs[iv]->Draw("pe sames");
 
     // TLine *line = new TLine(rat_obs[iv]->GetBinLowEdge(1),1.,rat_obs[iv]->GetBinLowEdge(rat_obs[iv]->GetNbinsX()),1.);
