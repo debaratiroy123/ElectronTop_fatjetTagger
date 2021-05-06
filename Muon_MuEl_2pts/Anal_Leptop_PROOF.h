@@ -70,12 +70,17 @@ double eta_to_theta(double eta){
 
 double PhiInRange(const double& phi) {
   double phiout = phi;
-  
+  //added newly by Debarati//
+  if(TMath::IsNaN(phiout)){
+    gROOT->Error("PhiInRange","function called with NaN");
+    return phiout;
+  }
+  //add ended//
   if( phiout > 2*M_PI || phiout < -2*M_PI) {
     phiout = fmod( phiout, 2*M_PI);
   }
-  if (phiout <= -M_PI) phiout += 2*M_PI;
-  else if (phiout >  M_PI) phiout -= 2*M_PI;
+  if (phiout < -M_PI) phiout += 2*M_PI;
+  else if (phiout >=  M_PI) phiout -= 2*M_PI;
   
   return phiout;
 }
@@ -951,6 +956,30 @@ double SF_TOP(double alpha, double beta, double pt0, double pt1)
         return sfwt;
 }
 
+//void reOrder(std::vector<double>&, std::vector<double>&, std::vector<double>&,std::vector<double>&, std::vector<math::XYZTLorentzVector>&);
+//template <class Type> void swap(Type&, Type&);
+
+void reOrder(std::vector<double>& pt, std::vector<double>& eta, std::vector<double>& phi,std::vector<double>& e, std::vector<double>& ch) { //std::vector<TLorentzVector>& jetcorr) {
+  for (unsigned int i=0; i<pt.size(); i++) {
+    for(unsigned int j=i+1; j<pt.size(); j++) {
+      if (pt[i]<pt[j]) {
+        swap<double>(pt[i],  pt[j]);
+        swap<double>(eta[i], eta[j]);
+        swap<double>(phi[i], phi[j]);
+        swap<double>(e[i],   e[j]);
+	swap<double>(ch[i],   ch[j]);
+        //swap<math::XYZTLorentzVector>(jetcorr[i], jetcorr[j]);
+      }
+    }
+  }
+}
+
+template <class Type>
+void swap(Type &a, Type &b){
+  Type tmp = a;
+  a=b;
+  b=tmp;
+}
 
 class Anal_Leptop_PROOF : public TSelector {
  public :
