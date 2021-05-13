@@ -1,0 +1,19 @@
+Sample(Autumn18)            XS(pb)
+TTbar Dilep		    88.29
+TTbar Semilep		    365.34
+TTbar Hadron		    377.96
+QCDHT100to200		    23590000.0
+QCDHT200to300		    1551000.0
+QCDHT300to500		    323400.0
+QCDHT500to700		    30140.0
+QCDHT700to1000		    6344.0
+QCDHT1000to1500		    1092.0
+QCDHT1500to2000		    99.76
+QCDHT2000toInf		    20.35
+St_t4f			    136.02
+St_antit4f		    80.95
+St_tw inclusive		    35.85
+St_antitw incl		    35.85
+St_s_lep  		    3.45
+
+
