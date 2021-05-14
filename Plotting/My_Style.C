@@ -299,6 +299,11 @@ TString lumi_13TeV_GH = "2016GH 16.4 fb^{-1}";
 TString lumi_13TeV_BCDEFGH = "< 35.9 fb^{-1}";
 TString lumi_13TeV_17BCD = "2017 18.7 fb^{-1}";
 TString lumi_13TeV_18 = "2018 59.7 fb^{-1}";
+TString lumi_13TeV_18D = "2018 31.9 fb^{-1}";
+//31.95 : 2018D, 6.612 : 2018C, 6.785 : 2018B, 13.48 : 2018A
+TString lumi_13TeV_18A = "2018 13.48 fb^{-1}";
+TString lumi_13TeV_18B = "2018 6.78 fb^{-1}";
+TString lumi_13TeV_18C = "2018 6.6 fb^{-1}";
 TString lumi_8TeV  = "19.7 fb^{-1}";
 TString lumi_7TeV  = "5.1 fb^{-1}";
 
