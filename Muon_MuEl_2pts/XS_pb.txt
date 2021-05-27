@@ -15,5 +15,8 @@ St_antit4f		    80.95
 St_tw inclusive		    35.85
 St_antitw incl		    35.85
 St_s_lep  		    3.45
-
+/***Diboson taken from AN2019_070_v5***/
+WW			    75.88
+WZ			    27.54
+ZZ			    12.16
 
