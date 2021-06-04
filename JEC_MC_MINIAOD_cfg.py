@@ -12,11 +12,23 @@ from RecoJets.JetProducers.AnomalousCellParameters_cfi import *
 from PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import selectedPatJets
 from PhysicsTools.PatAlgos.tools.jetTools import *
+#from PhysicsTools.PatAlgos.producersLayer1.metProducer_cfi import patMETs
 from PhysicsTools.PatAlgos.patSequences_cff import *
+#from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
+#from RecoJets.JetProducers.pileupjetidproducer_cfi import *
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.jetTools import *
 from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
+#from PhysicsTools.PatAlgos.slimming.slimmedJets_cfi import *
+#from PhysicsTools.PatAlgos.slimming.slimmedElectrons_cfi import *
+#from PhysicsTools.PatAlgos.slimming.slimmedPhotons_cfi import *
+#from PhysicsTools.PatAlgos.slimming.slimmedMuons_cfi import *
 
+
+## Modified version of jetToolBox from https://github.com/cms-jet/jetToolbox
+## Options for PUMethod: Puppi, CS, SK, CHS
+
+# -*- coding: utf-8 -*-
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("Combined")
@@ -36,10 +48,21 @@ process.load('RecoJets.JetProducers.PileupJetIDParams_cfi')
 
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
 process.load("PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff")
+#process.load("PhysicsTools.PatAlgos.slimming.slimmedJets_cfi")
+#process.load("PhysicsTools.PatAlgos.slimming.slimmedMETs_cfi")
+#process.load("PhysicsTools.PatAlgos.slimming.slimmedElectrons_cfi")
+#process.load("PhysicsTools.PatAlgos.slimming.slimmedPhotons_cfi")
+#process.load("PhysicsTools.PatAlgos.slimming.slimmedMuons_cfi")
+
+#from PhysicsTools.PatExamples.PatJetAnalyzer_cfi import*
 
 from RecoJets.Configuration.GenJetParticles_cff import *
 
-process.GlobalTag.globaltag = "102X_upgrade2018_realistic_v15"
+process.GlobalTag.globaltag = "102X_upgrade2018_realistic_v21"
+#process.GlobalTag.globaltag = "102X_upgrade2018_realistic_v15"
+#RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/
+#from Configuration.AlCa.GlobalTag import GlobalTag
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:mc', '')
 
 ##-------------------- Import the JEC services -----------------------
 process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
@@ -52,13 +75,16 @@ process.load("PhysicsTools.PatAlgos.patSequences_cff")
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 inFiles = cms.untracked.vstring(
+'root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/110000/079C3FC4-8835-394B-8E54-1C67DFAE7E8D.root'
 #'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext3-v2/00000/7D55475A-931D-1F47-8BF9-905DD6DC15B8.root'
 #'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext2-v2/50000/FE475AA9-6572-E548-BF9B-A6DCD6B9BBA1.root'
 #'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/TT_Mtt-700to1000_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/280000/97265F3B-9BED-0742-829D-F4C2920C28F4.root'
-'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B39F6C1A-06EA-484D-A076-3C7C0794239F.root'
+#'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B39F6C1A-06EA-484D-A076-3C7C0794239F.root'
+#'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/QCD_bEnriched_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/10000/C6B0BA02-7244-7B4A-83C1-E9D9397A0A7C.root'
+#'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/QCD_bEnriched_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/20000/105691C7-8434-2940-88D2-7369139692CB.root'   
    )
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2100))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2000))
 #process.firstEvent = cms.untracked.PSet(input = cms.untracked.int32(5000))
 process.source = cms.Source("PoolSource", fileNames = inFiles )
 
@@ -85,8 +111,10 @@ switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 
 # define which IDs to produce
 el_id_modules = [
+##    "RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff"
     "RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff",
     "RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff"
+##    "RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff"
 ]
 # Add them to the VID producer
 for iModule in el_id_modules:
@@ -128,6 +156,9 @@ deep_discriminators = ["pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQC
                         "pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD",
 			"pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD",
                         "pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD"
+#                        "pfBoostedDoubleSecondaryVertexAK8BJetTags"
+#                       "pfDeepCSVJetTags:probbb","pfDeepCSVJetTags:probb",
+#                       "pfCombinedInclusiveSecondaryVertexV2BJetTags"
 ]
 updateJetCollection(
    process,
@@ -145,6 +176,8 @@ process.mcjets =  cms.EDAnalyzer('Leptop',
 
 	 Data =  cms.untracked.bool(False),
 	 MonteCarlo =  cms.untracked.bool(True),
+         YEAR = cms.untracked.int32(2018),
+         UltraLegacy =  cms.untracked.bool(False),                        
 	 isReco = cms.untracked.bool(True),
  	 ReRECO = cms.untracked.bool(True),
 	 SoftDrop_ON =  cms.untracked.bool(True),
@@ -165,7 +198,7 @@ process.mcjets =  cms.EDAnalyzer('Leptop',
 	 minPt = cms.untracked.double(15.),
 	 maxEta = cms.untracked.double(3.),
          maxGenEta = cms.untracked.double(5.),
-	 AK8PtCut = cms.untracked.double(300.),
+	 AK8PtCut = cms.untracked.double(200.),
 	 nkTsub = cms.untracked.int32(2),
 
 	Beamspot = cms.InputTag("offlineBeamSpot"),
@@ -197,10 +230,16 @@ process.mcjets =  cms.EDAnalyzer('Leptop',
 	 PFSubJetsAK8 = cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked","SubJets","PAT"),
         #PFSubJetsAK8 = cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked","SubJets","PAT"), 
 	 Muons = cms.InputTag("slimmedMuons"),#,"","PAT"),
+         src = cms.InputTag("slimmedMuons"),                        
+         EAFile_MiniIso = cms.FileInPath("PhysicsTools/NanoAOD/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons_94X.txt"),
+         relative = cms.bool(True),
+         #run2_miniAOD_80XLegacy.toModify(isoForMu, EAFile_MiniIso = "PhysicsTools/NanoAOD/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt")
+        #run2_nanoAOD_94X2016.toModify(isoForMu, EAFile_MiniIso = "PhysicsTools/NanoAOD/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt")                        
+         pfCands = cms.InputTag("packedPFCandidates"),                        
          Electrons = cms.InputTag("slimmedElectrons"),#,"","PAT"),#("gsfElectrons"),
          Photons = cms.InputTag("slimmedPhotons"),#,"","PAT"),
 	 GenParticles = cms.InputTag("prunedGenParticles"),#("prunedGenParticles"),#("packedGenParticles"),
-
+                                 
         #label_mvaEleIDSpring16GeneralPurposeV1wploose_noIso_reco = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp90"),
 	 #label_mvaEleIDSpring16GeneralPurposeV1wploose_reco = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp90"),
         label_mvaPhoIDSpring16GeneralPurposeV1wploose_reco = cms.InputTag("egmPhotonIDs:mvaPhoID-RunIIFall17-v1p1-wp90"),
@@ -219,10 +258,10 @@ process.mcjets =  cms.EDAnalyzer('Leptop',
          jecL2L3ResidualFileAK4    = cms.string('Autumn18_V19_MC/Autumn18_V19_MC_L2L3Residual_AK4PFchs.txt'),
          jecL2L3ResidualFileAK8    = cms.string('Autumn18_V19_MC/Autumn18_V19_MC_L2L3Residual_AK8PFPuppi.txt'),
 
-	 PtResoFileAK4  = cms.string('Autumn18_V7_MC_PtResolution_AK4PFchs.txt'),
-         PtResoFileAK8  = cms.string('Autumn18_V7_MC_PtResolution_AK8PFPuppi.txt'),
-         PtSFFileAK4 = cms.string('Autumn18_V7_MC_SF_AK4PFchs.txt'),
-         PtSFFileAK8 = cms.string('Autumn18_V7_MC_SF_AK8PFPuppi.txt'),
+	 PtResoFileAK4  = cms.string('Autumn18_V7b_MC_PtResolution_AK4PFchs.txt'),
+         PtResoFileAK8  = cms.string('Autumn18_V7b_MC_PtResolution_AK8PFPuppi.txt'),
+         PtSFFileAK4 = cms.string('Autumn18_V7b_MC_SF_AK4PFchs.txt'),
+         PtSFFileAK8 = cms.string('Autumn18_V7b_MC_SF_AK8PFPuppi.txt'),
 
 	 HBHENoiseFilterResultLabel = cms.InputTag("HBHENoiseFilterResultProducer", "HBHENoiseFilterResult"),
          HBHENoiseFilterResultNoMinZLabel = cms.InputTag("HBHENoiseFilterResultProducerNoMinZ", "HBHENoiseFilterResult"),
@@ -273,6 +312,8 @@ process.load('RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi')
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.vtx = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.BadPFMuonFilter.taggingMode = cms.bool(True)
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
@@ -316,11 +357,16 @@ process.allMetFilterPaths=cms.Sequence(process.primaryVertexFilter*process.globa
 
 process.jetSeq=cms.Sequence(process.patJetCorrFactorsSlimmedJetsAK8+process.updatedPatJetsSlimmedJetsAK8+process.patJetCorrFactorsTransientCorrectedSlimmedJetsAK8+process.pfDeepBoostedJetTagInfosSlimmedJetsAK8+process.pfMassDecorrelatedDeepBoostedJetTagsSlimmedJetsAK8+process.pfMassDecorrelatedDeepBoostedDiscriminatorsJetTagsSlimmedJetsAK8+process.updatedPatJetsTransientCorrectedSlimmedJetsAK8)
 
-
+#process.p = cms.Path(process.egmGsfElectronIDSequence* 
 process.p = cms.Path(process.egmPhotonIDSequence* 
  		     process.HBHENoiseFilterResultProducer*process.HBHENoiseFilterResultProducerNoMinZ*
 		     process.allMetFilterPaths*
 		     process.ecalBadCalibReducedMINIAODFilter*
+#		     process.egmGsfElectronIDSequence*
+#		     process.patJetCorrFactorsSlimmedJetsAK8 *
+#		     process.updatedPatJetsSlimmedJetsAK8 *
+#		     process.patJetCorrFactorsTransientCorrectedSlimmedJetsAK8 * 
+#		     process.updatedPatJetsTransientCorrectedSlimmedJetsAK8 *
 		     process.jetSeq *
 		     process.mcjets)
 #process.p += process.mcjets
